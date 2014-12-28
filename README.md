@@ -1,4 +1,7 @@
 trip-planner-UL
 ===============
+Implemented using PHP, MySQL.
 
-A simple trip planner to plan a trip with a train schedule
+Using Bootstrap for front end Presentation.
+Bootstrap is available here https://github.com/twbs/bootstrap
+
