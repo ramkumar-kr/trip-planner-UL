@@ -1,0 +1,5 @@
+Get Train Number, Name, Starting and Ending Places
+	SELECT t.number, t.name, s.Name, s2.Name FROM trains as t, Stations as s,Stations as s2  WHERE t.start_stn = s.St_id and t.end_stn = s2.St_id
+One way trip - Replace ** by required station Ids
+	SELECT v.number,t.name,s.Name,v.Days,v.time,s2.Name,v2.Days,v2.time FROM visit as v, visit as v2,trains as t, Stations as s,Stations as s2 where v.St_id=** and v2.St_id=** and v.hop_index<v2.hop_index and v.number=v2.number and v.type=1 and v2.type=0 and t.number=v.number and s.St_id = v.St_id and s2.St_id = v2.St_id
+	
