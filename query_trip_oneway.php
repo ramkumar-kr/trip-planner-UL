@@ -5,6 +5,16 @@
  * Date: 31/12/14
  * Time: 11:42 PM
  */
+error_reporting(E_ALL);
+require('oneway.php');
+
+$start=$_POST['startpoint'];
+$end=$_POST['endpoint'];
+$date=$_POST['date_travel'];
+$time=$_POST['dep_time'];
+$checkbox=$_POST['return'];
+
+
 $host="localhost";
 $uname="root";//uname => username
 $pwd="";//pwd => password
@@ -45,7 +55,7 @@ else{
         </div>
         <div id="navbar" class="navbar-collapse collapse" aria-hidden="true">
             <ul class="nav navbar-nav">
-                <li class="active"><a href=".">Home</a></li>
+                <li ><a href=".">Home</a></li>
                 <li><a href="" data-toggle="modal" data-target="#about">About Developer</a></li>
             </ul>
         </div><!--/.nav-collapse -->
@@ -56,6 +66,21 @@ else{
 <!--Main Content -->
 <div class="container">
     <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+        <br/><br/><br/><br/><br/>
+
+        <?php
+            getonewaydata($connection,$start,$end);
+            if($checkbox == 1)
+            {
+                echo '<div><hr/><h3> Return Journey Trains</h3>';
+                    getonewaydata($connection,$end,$start);
+                echo '</div>';
+            }
+
+        ?>
+            <a href="index.php" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;Go Back </a>
+        </div>
     </div>
 </div>
 <!-- Modal Window for info about me -->

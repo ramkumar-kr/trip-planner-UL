@@ -3,8 +3,16 @@
  * Created by PhpStorm.
  * User: ramu
  * Date: 31/12/14
- * Time: 11:43 PM
+ * Time: 11:42 PM
  */
+
+require('oneway.php');
+
+$start=$_POST['startpoint'];
+$end=$_POST['endpoint'];
+$date=$_POST['date_travel'];
+$time=$_POST['dep_time'];
+
 $host="localhost";
 $uname="root";//uname => username
 $pwd="";//pwd => password
@@ -45,7 +53,7 @@ else{
         </div>
         <div id="navbar" class="navbar-collapse collapse" aria-hidden="true">
             <ul class="nav navbar-nav">
-                <li class="active"><a href=".">Home</a></li>
+                <li ><a href=".">Home</a></li>
                 <li><a href="" data-toggle="modal" data-target="#about">About Developer</a></li>
             </ul>
         </div><!--/.nav-collapse -->
@@ -56,6 +64,44 @@ else{
 <!--Main Content -->
 <div class="container">
     <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <br/><br/><br/><br/><br/>
+                <?php
+                $q1 = "select distinct number from visit where((number in (select  number from visit where St_id=14 and type=1)or number in (select  number from visit where St_id=18 and type=0)  ) and St_id!=$start and St_id!=$end)";//query
+                $res1 = mysqli_query($connection,$q1);
+                $num = mysqli_num_rows($res1);
+                if($num == 0)
+                {
+                    echo '<tr><td colspan=8 class="text-center">No Transit Routes Found</td></tr>';
+                }
+                else {
+                    $row = mysqli_fetch_row($res1);
+                    $train1=$row[0];
+                    $row = mysqli_fetch_row($res1);
+                    $train2=$row[0];
+                    $q2="SELECT DISTINCT v.St_id,s.Name FROM visit AS v, Stations AS s WHERE v.St_id IN ( SELECT DISTINCT St_id FROM visit WHERE ( number ='$train1' ) ) AND v.St_id IN ( SELECT DISTINCT St_id FROM visit WHERE ( number ='$train2' ) ) AND ( v.number = '$train1' OR v.number = '$train2' ) AND v.St_id = s.St_id ";
+
+                    $res2 = mysqli_query($connection,$q2);
+
+                    $num2 = mysqli_num_rows($res2);
+
+                        $row2 = mysqli_fetch_array($res2);
+                        $transit=$row2[0];
+
+                            getonewaydata($connection,$start,$transit);
+                            echo '<hr/><h4> Transit Station : '.$row2[1].'<hr/></h4>';
+                            getonewaydata($connection,$transit,$end);
+
+                        ?>
+
+                    <?
+
+                }
+                ?>
+                </tbody>
+            </table>
+            <a href="index.php" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;Go Back </a>
+        </div>
     </div>
 </div>
 <!-- Modal Window for info about me -->
@@ -80,7 +126,6 @@ else{
 
 <!--jQuery-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
 <!-- Bootstrap Javascript files-->
 <script src="bootstrap/js/bootstrap.min.js"></script>
 </body>

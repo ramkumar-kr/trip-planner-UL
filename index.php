@@ -5,7 +5,7 @@
  * Date: 28/12/14
  * Time: 11:16 PM
  */
-
+error_reporting(E_ALL);
 /*Database Details*/
 $host="localhost";
 $uname="root";//uname => username
@@ -49,7 +49,7 @@ else{
             <div id="navbar" class="navbar-collapse collapse" aria-hidden="true">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href=".">Home</a></li>
-                    <li><a href="" data-toggle="modal" data-target="#about">About Developer</a></li>
+                    <li><a href="" data-toggle="modal" data-target="#about">Readme</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
@@ -57,69 +57,72 @@ else{
     <!-- Navigation bar ends-->
 
     <!--Main Content -->
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <br/><br/><br/>
-            <div class="col-sm-4 col-sm-offset-8"><button class="btn btn-info btn-block btn-lg" id="btntgl" onclick="toggle()">Toggle between Direct or Multiway Trips</button></div>
+            <div class="col-sm-4 col-sm-offset-8"><button class="btn btn-info btn-block btn-lg btn-warning" id="btntgl" onclick="toggle()">Toggle between Direct or Multiway Trips</button></div>
             <br/>
             <!--One Way Trip Form -->
             <div id="OnewayTrip" class="col-md-8 col-lg-6 col-sm-10 col-xs-10 col-md-offset-2 col-lg-offset-3 col-sm-offset-1 col-xs-offset-1">
                 <h2>One Way Trip Form</h2>
                 <form method="post" action="query_trip_oneway.php" role="form" class="form-control-static">
                     <!-- Starting Point -->
-                    <div class="form-group">
-                        <label for="startpoint">Departing Station</label>
-                        <select id="startpoint" class="form-control">
-                            <?php
-                            //get stations to select as a dropdown
-                            $q1 = "select * from Stations;";//query
-                            $res1 = mysqli_query($connection,$q1);
-                            $num = mysqli_num_rows($res1);
-                            for($i=0;$i<$num;$i++){
-                                $row = mysqli_fetch_array($res1);
-                                echo '<option>'. $row["Name"].'</option>';
-                            }
-                            ?>
-                        </select>
+                        <div class="form-group">
+                            <label for="startpoint">Departing Station</label>
+                            <select id="startpoint" class="form-control" name="startpoint">
+                                <?php
+                                //get stations to select as a dropdown
+                                $q1 = "select * from Stations order by Name ASC;";//query
+                                $res1 = mysqli_query($connection,$q1);
+                                $num = mysqli_num_rows($res1);
+                                for($i=0;$i<$num;$i++){
+                                    $row = mysqli_fetch_array($res1);
+                                    ?>
+                                    <option value="<?echo $row['St_id'];?>"><? echo $row['Name']; ?></option>
+                                <?
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <!-- End Point -->
+                        <div class="form-group">
+                            <label for="endpoint">Destination</label>
+                            <select id="endpoint" class="form-control" name="endpoint">
+                                <?php
+                                //get stations to select as a dropdown
+                                $q1 = "select * from Stations order by Name ASC;";//query
+                                $res1 = mysqli_query($connection,$q1);
+                                $num = mysqli_num_rows($res1);
+                                for($i=0;$i<$num;$i++){
+                                    $row = mysqli_fetch_array($res1);
+                                    ?>
+                                    <option value="<?echo $row['St_id'];?>"><? echo $row['Name']; ?></option>
+                                <?
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <!-- Date of Travel -->
+                        <div class="form-group">
+                            <label for="date_travel">Date of Travel</label>
+                            <input type="date" class="form-control" id="date_travel" name="date_travel" placeholder="Enter Date in yyyy-mm-dd format" required>
+                        </div>
+
+                        <!-- Time -->
+                        <div class="form-group">
+                            <label for="dep_time">Departing time</label>
+                            <input type="time" class="form-control" id="dep_time" name="dep_time" placeholder="Enter Time of Departure in hh:mm format (24 hour format)" required>
+                        </div>
+                    <div class="checkbox form-group">
+                        <label for="return">
+                        <input type="checkbox" id="return" name="return" value="1" checked/> Plan for Return Journey</label>
                     </div>
 
-                    <!-- End Point -->
-                    <div class="form-group">
-                        <label for="endpoint">Destination</label>
-                        <select id="endpoint" class="form-control">
-                            <?php
-                            //get stations to select as a dropdown
-                            $q1 = "select * from Stations;";//query
-                            $res1 = mysqli_query($connection,$q1);
-                            $num = mysqli_num_rows($res1);
-                            for($i=0;$i<$num;$i++){
-                                $row = mysqli_fetch_array($res1);
-                                echo '<option>'. $row["Name"].'</option>';
-                            }
-                            ?>
-                        </select>
-                    </div>
-
-                    <!-- Date of Travel -->
-                    <div class="form-group">
-                        <label for="date_travel">Date of Travel</label>
-                        <input type="date" class="form-control" id="exampleInputPassword1" placeholder="Enter Date in mm/dd/yyyy format">
-                    </div>
-
-                    <!-- Time -->
-                    <div class="form-group">
-                        <label for="dep_time">Departing time</label>
-                        <input type="time" class="form-control" id="exampleInputPassword1" placeholder="Enter Time of Departure in hh:mm XX where XX can be AM or PM">
-                    </div>
-                    <!-- Include Return Journey option-->
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox">Plan for Return Journey also
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg pull-right">Submit</button>
-                    <button type="reset" class="btn btn-danger btn-lg pull-left">Reset</button>
-                </form>
+                        <button type="submit" class="btn btn-primary btn-lg pull-right">Submit</button>
+                        <button type="reset" class="btn btn-danger btn-lg pull-left">Reset</button>
+                    </form>
             </div>
 
             <br/><br/>
@@ -128,19 +131,21 @@ else{
             <!-- Same Thing Applied for Multiway Trip, hidden by Default and Background color Changed-->
             <div id="MultiwayTrip" class=" col-md-8 col-lg-6 col-sm-10 col-xs-10 col-md-offset-2 col-lg-offset-3 col-sm-offset-1 col-xs-offset-1 well" >
                 <h2>Multi Way Trip Form</h2>
-                <form method="post" action="query_trip_mutliway.php" role="form" class="form-control-static">
+                <form method="post" action="query_trip_multiway.php" role="form" class="form-control-static">
                     <!-- Starting Point -->
                     <div class="form-group">
                         <label for="startpoint">Departing Station</label>
-                        <select id="startpoint" class="form-control">
+                        <select id="startpoint" class="form-control" name="startpoint" required>
                             <?php
                             //get stations to select as a dropdown
-                            $q1 = "select * from Stations;";//query
+                            $q1 = "select * from Stations order by Name ASC;";//query
                             $res1 = mysqli_query($connection,$q1);
                             $num = mysqli_num_rows($res1);
                             for($i=0;$i<$num;$i++){
                                 $row = mysqli_fetch_array($res1);
-                                echo '<option>'. $row["Name"].'</option>';
+                                ?>
+                                <option value="<?echo $row['St_id'];?>"><? echo $row['Name']; ?></option>
+                            <?
                             }
                             ?>
                         </select>
@@ -149,15 +154,17 @@ else{
                     <!-- End Point -->
                     <div class="form-group">
                         <label for="endpoint">Destination</label>
-                        <select id="endpoint" class="form-control">
+                        <select id="endpoint" class="form-control" name="endpoint" required>
                             <?php
                             //get stations to select as a dropdown
-                            $q1 = "select * from Stations;";//query
+                            $q1 = "select * from Stations order by Name ASC;";//query
                             $res1 = mysqli_query($connection,$q1);
                             $num = mysqli_num_rows($res1);
                             for($i=0;$i<$num;$i++){
                                 $row = mysqli_fetch_array($res1);
-                                echo '<option>'. $row["Name"].'</option>';
+                                ?>
+                                <option value="<?echo $row['St_id'];?>"><? echo $row['Name']; ?></option>
+                            <?
                             }
                             ?>
                         </select>
@@ -166,13 +173,13 @@ else{
                     <!-- Date of Travel -->
                     <div class="form-group">
                         <label for="date_travel">Date of Travel</label>
-                        <input type="date" class="form-control" id="exampleInputPassword1" placeholder="Enter Date in mm/dd/yyyy format">
+                        <input type="date" class="form-control" id="date_travel" name="date_travel" placeholder="Enter Date in mm/dd/yyyy format" required>
                     </div>
 
                     <!-- Time -->
                     <div class="form-group">
                         <label for="dep_time">Departing time</label>
-                        <input type="time" class="form-control" id="exampleInputPassword1" placeholder="Enter Time of Departure">
+                        <input type="time" class="form-control" id="dep_time" name="dep_time" placeholder="Enter Time of Departure" required>
                     </div>
                     <!--  Return Journey option not included-->
 
@@ -195,11 +202,31 @@ else{
             <div class="modal-content">
                 <div class="modal-header">
                     <button class="close" aria-hidden="true" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> </button>
-                    <h3 class="modal-title">About the developer</h3>
+                    <h3 class="modal-title">Some Notes</h3>
 
                 </div>
                 <div class="modal-body">
-                    <div class="well"><h4 class="h4">Ram Kumar K R</h4> Information Science Branch, <br/> R V College of Engineering</div>
+                    <ul class="list-group">
+                        <li class="list-group-item ">All Timings are in 24 hour format</li>
+                        <li class="list-group-item ">Only Some Trains such as Chennai Express, Pushpak Express(From Mumbai to Lucknow) and Kamkhya Ledo Intercity Express journey details are added to the database</li>
+                        <li class="list-group-item text-danger">Code has not been written to add a train journey to the database. </li>
+                        <li class="list-group-item text-danger">If the browser supports HTML5 input as date functionality, a pop up appears to select date and time. If not, a text field will be shown</li>
+                        <li class="list-group-item">The Procedure to add a train data to database is as follows<br/>
+                            <ol>
+                                <li>Add the stations/locations (if already not present) to the stations table</li>
+                                <li>Add the train to the trains table with the required parameters</li>
+                                <li>Complete the visit table by adding appropriate data for every station visited by the train</li>
+                            </ol></li>
+                        <li class="list-group-item text-info text-justify">The days stored in the visit table are encoded as follows:<br/>
+                            Each day of the week has a specific number associated with it.(numbers are powers of 2).<br/>
+                            The numbers are specified in non-decreasing order starting from Monday till Sunday<br/>
+                            Monday -> 1, Tuesday -> 2, Wednesday -> 4, Thursday -> 8, Friday ->16, Saturday -> 32, Sunday ->64<br/>
+                            If a train runs on multiple days, just add the specific numbers of all the days.<br/>
+                            For example, if a train runs on wednesday and saturday, the value will be 36<br/><br/>
+                            The main intention of using this is to minimize amount of time spent in fetching data from the database by performing few more computations.
+                        </li>
+                        <li class="list-group-item">Few improvements are possible in incorporating date and time of departure and arrival</li>
+                    </ul>
                 </div>
                 <div class="modal-footer">
                     <a role="button" href="mailto:ramkumarkr@outlook.in" class="btn btn-lg btn-info"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Send a message</a>
@@ -212,12 +239,15 @@ else{
     <!--jQuery-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script>
+        num=1;
         function toggle(){
-            $('#OnewayTrip').toggle();
-            $('#MultiwayTrip').toggle();
+            $('#btntgl').toggleClass('btn-warning');
+            $('#OnewayTrip').toggle('slow');
+            $('#MultiwayTrip').toggle('slow');
         }
         $(document).ready(function(){
             $('#MultiwayTrip').hide('0');
+
         })
     </script>
     <!-- Bootstrap Javascript files-->
